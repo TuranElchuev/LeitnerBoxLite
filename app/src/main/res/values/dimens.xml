@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="text_box">20sp</dimen>
+    <dimen name="text_word">30sp</dimen>
+    <dimen name="text_hint">24sp</dimen>
+    <dimen name="text_example">18sp</dimen>
+    <dimen name="text_example_hint">18sp</dimen>
+
+
+    <dimen name="text_padding">5dp</dimen>
+
+    <dimen name="margin_m">10dp</dimen>
+    <dimen name="margin_l">20dp</dimen>
+
+</resources>

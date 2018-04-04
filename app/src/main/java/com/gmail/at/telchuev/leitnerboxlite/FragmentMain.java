@@ -141,7 +141,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         tv_hint.setText(e.getHint());
         tv_example.setText(e.getExample());
         tv_example_hint.setText(e.getExampleHint());
-        tv_box.setText("" + e.getBoxNumber());
+        tv_box.setText(getString(R.string.box) + ": " + e.getBoxNumber());
     }
 
     private boolean indexValid(){
