@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">LeitnerBoxLite</string>
+
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="box">Box</string>
+    <string name="add">Add</string>
+    <string name="vocabulary">Vocab</string>
+    <string name="know">Know</string>
+    <string name="repeat">Repeat</string>
+    <string name="skip">Skip</string>
+    <string name="title_activity_add_edit">AddEditActivity</string>
+
+
+    <string name="word">Word</string>
+    <string name="hint">Hint</string>
+    <string name="example">Example</string>
+    <string name="example_hint">Example hint</string>
+
+    <string name="invalid_entry">Invalid entry!</string>
+    <string name="entry_added">Entry added.</string>
+    <string name="entry_updated">Entry updated.</string>
+</resources>
