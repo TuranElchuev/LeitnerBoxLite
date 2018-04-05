@@ -20,4 +20,5 @@
     <string name="invalid_entry">Invalid entry!</string>
     <string name="entry_added">Entry added.</string>
     <string name="entry_updated">Entry updated.</string>
+    <string name="no_entries">No entries in vocabulary.</string>
 </resources>

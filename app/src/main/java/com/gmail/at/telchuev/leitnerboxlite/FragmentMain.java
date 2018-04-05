@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -114,9 +115,13 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     }
 
     private void findNextEntryIndex(){
-        if(!dataExists()){
-            index = -1;
-            return;
+        if(!dataExists()){ // might run out of Entries in current box
+            initializeData();
+            if(!dataExists()) {
+                Toast.makeText(getContext(), R.string.no_entries, Toast.LENGTH_SHORT).show();
+                index = -1;
+                return;
+            }
         }
 
         Random rnd = new Random();
