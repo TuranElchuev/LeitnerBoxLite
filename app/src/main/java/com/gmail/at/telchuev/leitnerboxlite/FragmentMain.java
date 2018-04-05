@@ -1,5 +1,6 @@
 package com.gmail.at.telchuev.leitnerboxlite;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -17,7 +18,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
     private TextView tv_word, tv_hint, tv_example, tv_example_hint, tv_box;
 
-    private ArrayList<Entry> data;
+    private ArrayList<Entry> vocabData;
     private int index = -1;
 
     private boolean hint = false;
@@ -65,15 +66,40 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case AddEditActivity.INTENT_ADD:
+                if(resultCode == Activity.RESULT_OK){
+                    initializeData();
+                    switchEntry();
+                }
+                break;
+            case AddEditActivity.INTENT_EDIT:
+                if(resultCode == Activity.RESULT_OK){
+                    vocabData.get(index).refresh();
+                    setDataToView();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_add:
-                Intent intent = new Intent(getContext(), AddEditActivity.class);
-                startActivity(intent);
+                Intent intentAdd = new Intent(getContext(), AddEditActivity.class);
+                intentAdd.setAction(AddEditActivity.ACTION_ADD);
+                startActivityForResult(intentAdd, AddEditActivity.INTENT_ADD);
                 break;
             case R.id.btn_edit:
                 if(indexValid()){
-
+                    Intent intentEdit = new Intent(getContext(), AddEditActivity.class);
+                    intentEdit.setAction(AddEditActivity.ACTION_EDIT);
+                    intentEdit.putExtra(AddEditActivity.INTENT_KEY_ENTRY_ID, vocabData.get(index).getId());
+                    startActivityForResult(intentEdit, AddEditActivity.INTENT_EDIT);
                 }
                 break;
             case R.id.btn_vocabulary:
@@ -89,19 +115,19 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
                 break;
             case R.id.btn_skip:
                 if((indexValid())) {
-                    data.get(index).skip();
+                    vocabData.get(index).skip();
                     switchEntry();
                 }
                 break;
             case R.id.btn_repeat:
                 if((indexValid())) {
-                    data.get(index).repeat();
+                    vocabData.get(index).repeat();
                     switchEntry();
                 }
                 break;
             case R.id.btn_know:
                 if((indexValid())) {
-                    data.get(index).know();
+                    vocabData.get(index).know();
                     switchEntry();
                 }
                 break;
@@ -111,7 +137,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     }
 
     private void initializeData(){
-        data = Utility.getLowestBoxVocabulary();
+        vocabData = Utility.getLowestBoxVocabulary();
     }
 
     private void findNextEntryIndex(){
@@ -125,7 +151,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         }
 
         Random rnd = new Random();
-        index = rnd.nextInt(data.size());
+        index = rnd.nextInt(vocabData.size());
     }
 
     private void setDataToView(){
@@ -141,7 +167,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
             return;
         }
 
-        Entry e = data.get(index);
+        Entry e = vocabData.get(index);
         tv_word.setText(e.getWord());
         tv_hint.setText(e.getHint());
         tv_example.setText(e.getExample());
@@ -152,16 +178,16 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     private boolean indexValid(){
         return dataExists()
                 && index > -1
-                && index < data.size();
+                && index < vocabData.size();
     }
 
     private boolean dataExists(){
-        return data != null && !data.isEmpty();
+        return vocabData != null && !vocabData.isEmpty();
     }
 
     private void removeEntry(){
         if(indexValid()){
-            data.remove(index);
+            vocabData.remove(index);
         }
     }
 

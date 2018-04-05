@@ -3,6 +3,8 @@ package com.gmail.at.telchuev.leitnerboxlite;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.ArrayList;
+
 public class Entry {
 
     public static final String CATEGORY_DEFAULT = "Default";
@@ -34,6 +36,10 @@ public class Entry {
     }
 
     public Entry(Cursor c){
+        init(c);
+    }
+
+    private void init(Cursor c){
         this.setCategory(c.getString(c.getColumnIndex(DBHelper.COL_CATEGORY)));
         this.setWord(c.getString(c.getColumnIndex(DBHelper.COL_WORD)));
         this.setHint(c.getString(c.getColumnIndex(DBHelper.COL_HINT)));
@@ -46,6 +52,24 @@ public class Entry {
         this.setPriority(c.getInt(c.getColumnIndex(DBHelper.COL_PRIORITY)));
         this.setBoxNumber(c.getInt(c.getColumnIndex(DBHelper.COL_BOX_NMB)));
         this.setId(c.getInt(c.getColumnIndex(DBHelper.COL_ID)));
+    }
+
+    private void init(Entry e){
+        this.setCategory(e.getCategory());
+        this.setWord(e.getWord());
+        this.setHint(e.getHint());
+        this.setExample(e.getExample());
+        this.setExampleHint(e.getExampleHint());
+        this.setLastVisited(e.getLastVisited());
+        this.setCreated(e.getCreated());
+        this.setPriority(e.getPriority());
+        this.setBoxNumber(e.getBoxNumber());
+        this.setId(e.getId());
+    }
+
+    public void init(int id){
+        setId(id);
+        refresh();
     }
 
     // SETTERS
@@ -182,5 +206,14 @@ public class Entry {
 
     public boolean isNew(){
         return getId() == INVALID_ID;
+    }
+
+    public void refresh(){
+        if(isNew()) return;
+
+        ArrayList<Entry> vocab = Utility.getVocabulary(DBHelper.COL_ID + " = " + getId());
+        if(vocab.isEmpty()) return;
+
+        this.init(vocab.get(0));
     }
 }

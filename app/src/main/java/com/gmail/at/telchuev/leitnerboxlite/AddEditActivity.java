@@ -10,12 +10,18 @@ import android.widget.Toast;
 
 public class AddEditActivity extends Activity {
 
-    public static final String INTENT_KEY_ETRY = "entry";
+    public static final int INTENT_ADD = 9000;
+    public static final int INTENT_EDIT = 9001;
+    public static final String ACTION_ADD = "9000";
+    public static final String ACTION_EDIT = "9001";
+    public static final String INTENT_KEY_ENTRY_ID = "entry_id";
 
     private EditText et_word,
             et_hint,
             et_example,
             et_example_hint;
+
+    private Entry entry_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +39,33 @@ public class AddEditActivity extends Activity {
                 saveEntry();
             }
         });
+
+
+        entry_ = new Entry();
+        switch (getIntent().getAction()){
+            case ACTION_ADD:
+                break;
+            case ACTION_EDIT:
+                entry_.init(getIntent().getIntExtra(INTENT_KEY_ENTRY_ID, -1));
+
+                et_word.setText(entry_.getWord());
+                et_hint.setText(entry_.getHint());
+                et_example.setText(entry_.getExample());
+                et_example_hint.setText(entry_.getExampleHint());
+                break;
+            default:
+                break;
+        }
     }
 
     private void saveEntry(){
-        Entry e = new Entry();
-        e.setWord(et_word.getText().toString());
-        e.setHint(et_hint.getText().toString());
-        e.setExample(et_example.getText().toString());
-        e.setExampleHint(et_example_hint.getText().toString());
-        e.toDB();
-        Toast.makeText(this, R.string.entry_added, Toast.LENGTH_SHORT).show();
+        entry_.setWord(et_word.getText().toString());
+        entry_.setHint(et_hint.getText().toString());
+        entry_.setExample(et_example.getText().toString());
+        entry_.setExampleHint(et_example_hint.getText().toString());
+        entry_.toDB();
+        Toast.makeText(this, R.string.entry_saved, Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK);
         this.finish();
     }
 
