@@ -103,6 +103,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_vocabulary:
+                Utility.importFile();
                 break;
             case R.id.btn_box:
                 break;

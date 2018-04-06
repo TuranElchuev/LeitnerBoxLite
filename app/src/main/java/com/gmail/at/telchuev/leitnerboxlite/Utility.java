@@ -4,7 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Utility {
@@ -81,6 +87,75 @@ public class Utility {
         SQLiteDatabase db = new DBHelper().getWritableDatabase();
         db.delete(DBHelper.TABLE_NAME_MAIN, null, null);
         db.close();
+    }
+
+    public static void importFile(){
+
+        //READ WORDS FROM FILE
+        BufferedReader reader = null;
+        boolean isWord = true;
+        ArrayList<Word> newWords = new ArrayList<>();
+        try {
+            reader = new BufferedReader(new InputStreamReader(MyApp.getAppContext().getAssets().open("Goethe B1.txt")));
+
+            String line;
+            Word w = null;
+            String s = "";
+            while ((line = reader.readLine()) != null) {
+                if(line.isEmpty()) {
+                    s = s.substring(0, s.length()-1);
+                    if(isWord) {
+                        w = new Word();
+                        newWords.add(w);
+                        w.word = s;
+                    }else {
+                        w.example = s;
+                    }
+                    s = "";
+                    isWord = !isWord;
+                }else {
+                    s = s + line + "\n";
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // GET EXISTING WORDS
+        ArrayList<String> existingWords = new ArrayList<>();
+        SQLiteDatabase db = new DBHelper().getWritableDatabase();
+        String query = "SELECT " + DBHelper.COL_WORD + " FROM " + DBHelper.TABLE_NAME_MAIN;
+        Cursor c = db.rawQuery(query, null);
+        if(c.moveToFirst()){
+            do{
+                existingWords.add(c.getString(c.getColumnIndex(DBHelper.COL_WORD)));
+            }while (c.moveToNext());
+        }
+        c.close();
+        db.close();
+
+        // ADD TO DB NON-EXISTING WORDS
+        for(Word w: newWords){
+            if(!existingWords.contains(w.word)){
+                Entry e = new Entry();
+                e.setWord(w.word);
+                e.setExample(w.example);
+                e.toDB();
+                Log.d(MyApp.TAG, "Added: " + e.getWord());
+            }
+        }
+
+    }
+
+    public static class Word {
+        public String word;
+        public String example;
     }
 
 }
