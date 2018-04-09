@@ -21,25 +21,29 @@
                 android:id="@+id/et_word"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/word"/>
+                android:hint="@string/word"
+                android:layout_margin="@dimen/margin_m"/>
 
             <EditText
                 android:id="@+id/et_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint"/>
+                android:hint="@string/hint"
+                android:layout_margin="@dimen/margin_m"/>
 
             <EditText
                 android:id="@+id/et_example"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/example"/>
+                android:hint="@string/example"
+                android:layout_margin="@dimen/margin_m"/>
 
             <EditText
                 android:id="@+id/et_example_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/example_hint"/>
+                android:hint="@string/example_hint"
+                android:layout_margin="@dimen/margin_m"/>
 
         </LinearLayout>
 

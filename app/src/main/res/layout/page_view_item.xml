@@ -35,7 +35,8 @@
                 android:textColor="@color/textSecondary"
                 android:gravity="center"
                 android:layout_marginTop="@dimen/margin_m"
-                android:layout_marginBottom="@dimen/margin_m" />
+                android:layout_marginBottom="@dimen/margin_m"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tv_example"
@@ -51,7 +52,8 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_example_hint"
                 android:padding="@dimen/text_padding"
-                android:textColor="@color/textSecondary" />
+                android:textColor="@color/textSecondary"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

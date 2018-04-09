@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,23 +16,22 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class FragmentMain extends Fragment implements View.OnClickListener{
 
-    private TextView tv_word, tv_hint, tv_example, tv_example_hint;
-
     private Spinner spinner_box;
 
     private ArrayList<Entry> vocabData;
-    private int index = -1;
 
     private boolean hint = false;
 
     private String selectedBox;
+
+    private ViewPager pager;
 
     public FragmentMain() {
     }
@@ -49,19 +51,14 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         spinner_box = (Spinner)v.findViewById(R.id.spinner_box);
         setupSpinner();
 
+        pager = (ViewPager)v.findViewById(R.id.view_pager);
+
         ((ImageButton)v.findViewById(R.id.btn_add)).setOnClickListener(this);
         ((Button)v.findViewById(R.id.btn_repeat)).setOnClickListener(this);
-        ((Button)v.findViewById(R.id.btn_skip)).setOnClickListener(this);
         ((ImageButton)v.findViewById(R.id.btn_hint)).setOnClickListener(this);
         ((Button)v.findViewById(R.id.btn_know)).setOnClickListener(this);
         ((ImageButton)v.findViewById(R.id.btn_edit)).setOnClickListener(this);
 
-        tv_word = (TextView)v.findViewById(R.id.tv_word);
-        tv_hint = (TextView)v.findViewById(R.id.tv_hint);
-        tv_example = (TextView)v.findViewById(R.id.tv_example);
-        tv_example_hint = (TextView)v.findViewById(R.id.tv_example_hint);
-
-        this.setDataToView();
         return v;
     }
 
@@ -108,8 +105,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
                 break;
             case AddEditActivity.INTENT_EDIT:
                 if(resultCode == Activity.RESULT_OK){
-                    vocabData.get(index).refresh();
-                    setDataToView();
+                    vocabData.get(pager.getCurrentItem()).refresh();
+                    // TODO refresh view
                 }
                 break;
             default:
@@ -126,10 +123,10 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
                 startActivityForResult(intentAdd, AddEditActivity.INTENT_ADD);
                 break;
             case R.id.btn_edit:
-                if(indexValid()){
+                if(entryValid()){
                     Intent intentEdit = new Intent(getContext(), AddEditActivity.class);
                     intentEdit.setAction(AddEditActivity.ACTION_EDIT);
-                    intentEdit.putExtra(AddEditActivity.INTENT_KEY_ENTRY_ID, vocabData.get(index).getId());
+                    intentEdit.putExtra(AddEditActivity.INTENT_KEY_ENTRY_ID, vocabData.get(pager.getCurrentItem()).getId());
                     startActivityForResult(intentEdit, AddEditActivity.INTENT_EDIT);
                 }
                 break;
@@ -140,21 +137,17 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
                     showHint();
                 }
                 break;
-            case R.id.btn_skip:
-                if((indexValid())) {
-                    vocabData.get(index).skip();
-                    switchEntry();
-                }
-                break;
             case R.id.btn_repeat:
-                if((indexValid())) {
-                    vocabData.get(index).repeat();
+                if((entryValid())) {
+                    vocabData.get(pager.getCurrentItem()).repeat();
+                    removeCurrentEntry();
                     switchEntry();
                 }
                 break;
             case R.id.btn_know:
-                if((indexValid())) {
-                    vocabData.get(index).know();
+                if((entryValid())) {
+                    vocabData.get(pager.getCurrentItem()).know();
+                    removeCurrentEntry();
                     switchEntry();
                 }
                 break;
@@ -167,71 +160,80 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         vocabData = Utility.getBoxVocabulary(selectedBox);
     }
 
-    private void findNextEntryIndex(){
-        if(!dataExists()){ // might run out of Entries in current box
-            initializeData();
-            if(!dataExists()) {
-                Toast.makeText(getContext(), R.string.no_entries, Toast.LENGTH_SHORT).show();
-                index = -1;
-                return;
-            }
-        }
-
-        Random rnd = new Random();
-        index = rnd.nextInt(vocabData.size());
-    }
-
-    private void setDataToView(){
-        tv_word.setText("");
-        tv_hint.setText("");
-        tv_example.setText("");
-        tv_example_hint.setText("");
-
-        hideHint();
-
-        if(!indexValid()){
-            return;
-        }
-
-        Entry e = vocabData.get(index);
-        tv_word.setText(e.getWord());
-        tv_hint.setText(e.getHint());
-        tv_example.setText(e.getExample());
-        tv_example_hint.setText(e.getExampleHint());
-    }
-
-    private boolean indexValid(){
-        return dataExists()
-                && index > -1
-                && index < vocabData.size();
-    }
-
     private boolean dataExists(){
         return vocabData != null && !vocabData.isEmpty();
     }
 
-    private void removeEntry(){
-        if(indexValid()){
-            vocabData.remove(index);
+    private void removeCurrentEntry(){
+        if(entryValid()){
+            vocabData.remove(pager.getCurrentItem());
         }
     }
 
+    private boolean entryValid(){
+        return pager.getAdapter() != null
+                && pager.getAdapter().getCount() > 0
+                && vocabData != null
+                && vocabData.size() == pager.getAdapter().getCount();
+    }
+
     private void switchEntry(){
-        removeEntry();
-        findNextEntryIndex();
-        setDataToView();
+        Collections.shuffle(vocabData);
+        pager.setAdapter(new CustomViewPagerAdapter());
     }
 
     private void showHint(){
         hint = true;
-        tv_hint.setVisibility(View.VISIBLE);
-        tv_example_hint.setVisibility(View.VISIBLE);
+        // TODO refresh view
     }
 
     private void hideHint(){
         hint = false;
-        tv_hint.setVisibility(View.INVISIBLE);
-        tv_example_hint.setVisibility(View.INVISIBLE);
+        // TODO refresh view
+    }
+
+    private class CustomViewPagerAdapter extends PagerAdapter{
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            ViewGroup view = (ViewGroup)LayoutInflater.from(getContext()).inflate(R.layout.page_view_item, container, false);
+
+            container.addView(view);
+
+            TextView tv_word = (TextView)view.findViewById(R.id.tv_word);
+            TextView tv_hint = (TextView)view.findViewById(R.id.tv_hint);
+            TextView tv_example = (TextView)view.findViewById(R.id.tv_example);
+            TextView tv_example_hint = (TextView)view.findViewById(R.id.tv_example_hint);
+
+            if(hint){
+                tv_hint.setVisibility(View.VISIBLE);
+                tv_example_hint.setVisibility(View.VISIBLE);
+            }
+
+            Entry e = vocabData.get(position);
+            tv_word.setText(e.getWord());
+            tv_hint.setText(e.getHint());
+            tv_example.setText(e.getExample());
+            tv_example_hint.setText(e.getExampleHint());
+
+            return view;
+        }
+
+        @Override
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+            container.removeView((View)object);
+        }
+
+        @Override
+        public int getCount() {
+            return dataExists() ? vocabData.size() : 0;
+        }
+
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+            return view == object;
+        }
     }
 
 }

@@ -170,10 +170,6 @@ public class Entry {
         this.toDB();
     }
 
-    public void skip(){
-        this.toDB();
-    }
-
     // DATABASE MANIPULATIONS
 
     public void toDB(){
