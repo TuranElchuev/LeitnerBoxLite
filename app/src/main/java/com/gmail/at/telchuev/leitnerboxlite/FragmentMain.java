@@ -4,10 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,12 +21,16 @@ import java.util.Random;
 
 public class FragmentMain extends Fragment implements View.OnClickListener{
 
-    private TextView tv_word, tv_hint, tv_example, tv_example_hint, tv_box;
+    private TextView tv_word, tv_hint, tv_example, tv_example_hint;
+
+    private Spinner spinner_box;
 
     private ArrayList<Entry> vocabData;
     private int index = -1;
 
     private boolean hint = false;
+
+    private String selectedBox;
 
     public FragmentMain() {
     }
@@ -30,9 +39,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setRetainInstance(true);
-
-        initializeData();
-        findNextEntryIndex();
     }
 
     @Override
@@ -41,23 +47,49 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
         View v = inflater.inflate(R.layout.fragment_main, container, false);
 
-        ((Button)v.findViewById(R.id.btn_add)).setOnClickListener(this);
+        setupSpinner(v);
+
+        ((ImageButton)v.findViewById(R.id.btn_add)).setOnClickListener(this);
         ((Button)v.findViewById(R.id.btn_repeat)).setOnClickListener(this);
         ((Button)v.findViewById(R.id.btn_skip)).setOnClickListener(this);
-        ((Button)v.findViewById(R.id.btn_hint)).setOnClickListener(this);
+        ((ImageButton)v.findViewById(R.id.btn_hint)).setOnClickListener(this);
         ((Button)v.findViewById(R.id.btn_know)).setOnClickListener(this);
-        ((Button)v.findViewById(R.id.btn_vocabulary)).setOnClickListener(this);
-        ((Button)v.findViewById(R.id.btn_box)).setOnClickListener(this);
-        ((Button)v.findViewById(R.id.btn_edit)).setOnClickListener(this);
+        ((ImageButton)v.findViewById(R.id.btn_edit)).setOnClickListener(this);
 
         tv_word = (TextView)v.findViewById(R.id.tv_word);
         tv_hint = (TextView)v.findViewById(R.id.tv_hint);
         tv_example = (TextView)v.findViewById(R.id.tv_example);
         tv_example_hint = (TextView)v.findViewById(R.id.tv_example_hint);
-        tv_box = (TextView)v.findViewById(R.id.tv_box);
 
         this.setDataToView();
         return v;
+    }
+
+    private void setupSpinner(View v){
+        spinner_box = (Spinner)v.findViewById(R.id.spinner_box);
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Utility.getNonEmptyBoxes());
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_box.setAdapter(adapter);
+
+        spinner_box.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String box = parent.getItemAtPosition(position).toString();
+                if(!box.equals(selectedBox)) {
+                    selectedBox = box;
+                    initializeData();
+                    switchEntry();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -102,11 +134,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
                     startActivityForResult(intentEdit, AddEditActivity.INTENT_EDIT);
                 }
                 break;
-            case R.id.btn_vocabulary:
-                Utility.importFile();
-                break;
-            case R.id.btn_box:
-                break;
             case R.id.btn_hint:
                 if(hint){
                     hideHint();
@@ -138,7 +165,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     }
 
     private void initializeData(){
-        vocabData = Utility.getLowestBoxVocabulary();
+        vocabData = Utility.getBoxVocabulary(selectedBox);
     }
 
     private void findNextEntryIndex(){
@@ -160,7 +187,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         tv_hint.setText("");
         tv_example.setText("");
         tv_example_hint.setText("");
-        tv_box.setText("");
 
         hideHint();
 
@@ -173,7 +199,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         tv_hint.setText(e.getHint());
         tv_example.setText(e.getExample());
         tv_example_hint.setText(e.getExampleHint());
-        tv_box.setText(getString(R.string.box) + ": " + e.getBoxNumber());
     }
 
     private boolean indexValid(){

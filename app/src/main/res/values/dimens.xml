@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="text_box">14sp</dimen>
+    <dimen name="text_box">16sp</dimen>
     <dimen name="text_word">30sp</dimen>
     <dimen name="text_hint">24sp</dimen>
     <dimen name="text_example">18sp</dimen>

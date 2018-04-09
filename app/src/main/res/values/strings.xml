@@ -5,9 +5,9 @@
     <string name="save">Save</string>
     <string name="box">Box</string>
     <string name="add">Add</string>
-    <string name="vocabulary">Vocab</string>
-    <string name="know">Know</string>
-    <string name="repeat">Repeat</string>
+    <string name="vocabulary">Vocabulary</string>
+    <string name="know">I know it!</string>
+    <string name="repeat">Forgot</string>
     <string name="skip">Skip</string>
     <string name="title_activity_add_edit">AddEditActivity</string>
 

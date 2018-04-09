@@ -1,5 +1,6 @@
 package com.gmail.at.telchuev.leitnerboxlite;
 
+import android.app.backup.BackupHelper;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -16,6 +17,30 @@ import java.util.ArrayList;
 public class Utility {
 
     // DATA RETRIEVAL
+
+    public static ArrayList<String> getNonEmptyBoxes(){
+        ArrayList<String> result = new ArrayList<>();
+
+        SQLiteDatabase db = new DBHelper().getWritableDatabase();
+
+        String query = "SELECT DISTINCT " + DBHelper.COL_BOX_NMB
+                + " FROM " + DBHelper.TABLE_NAME_MAIN
+                + " ORDER BY " + DBHelper.COL_BOX_NMB + DBHelper.ASC;
+        Cursor c = db.rawQuery(query, null);
+
+        if(c.moveToFirst()){
+            do{
+                result.add(c.getString(c.getColumnIndex(DBHelper.COL_BOX_NMB)));
+            }while (c.moveToNext());
+        }
+        c.close();
+        db.close();
+        return result;
+    }
+
+    public static ArrayList<Entry> getBoxVocabulary(String boxNmb){
+        return getVocabulary(DBHelper.COL_BOX_NMB + " = " + boxNmb);
+    }
 
     public static ArrayList<Entry> getLowestBoxVocabulary(){
 
