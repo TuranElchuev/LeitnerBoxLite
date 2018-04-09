@@ -183,4 +183,11 @@ public class Utility {
         public String example;
     }
 
+    public static ArrayList<String> getSpinnerData(){
+        ArrayList<String> boxes = new ArrayList<>();
+        for(int i = Entry.BOX_NMB_MIN; i <= Entry.BOX_NMB_MAX; i++){
+            boxes.add("  "+i+"  ");
+        }
+        return boxes;
+    }
 }

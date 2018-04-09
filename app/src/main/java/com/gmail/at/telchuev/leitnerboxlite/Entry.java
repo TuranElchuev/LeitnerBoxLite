@@ -9,9 +9,9 @@ public class Entry {
 
     public static final String CATEGORY_DEFAULT = "Default";
 
-    private static final int PRIORITY_HIGHEST = 0,
+    public static final int PRIORITY_HIGHEST = 0,
             BOX_NMB_MIN = 0,
-            BOX_NMB_MAX = 10,
+            BOX_NMB_MAX = 5,
             INVALID_ID = -1;
 
     private String category = CATEGORY_DEFAULT,

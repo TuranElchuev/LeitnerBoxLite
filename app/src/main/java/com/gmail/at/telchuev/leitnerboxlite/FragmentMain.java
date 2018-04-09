@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +46,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
         View v = inflater.inflate(R.layout.fragment_main, container, false);
 
-        setupSpinner(v);
+        spinner_box = (Spinner)v.findViewById(R.id.spinner_box);
+        setupSpinner();
 
         ((ImageButton)v.findViewById(R.id.btn_add)).setOnClickListener(this);
         ((Button)v.findViewById(R.id.btn_repeat)).setOnClickListener(this);
@@ -65,11 +65,10 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         return v;
     }
 
-    private void setupSpinner(View v){
-        spinner_box = (Spinner)v.findViewById(R.id.spinner_box);
+    private void setupSpinner(){
 
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Utility.getNonEmptyBoxes());
+                new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Utility.getSpinnerData());
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_box.setAdapter(adapter);
