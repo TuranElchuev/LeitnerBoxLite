@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 public class FragmentMain extends Fragment implements View.OnClickListener{
 
@@ -95,7 +94,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     private void setupSpinner(){
 
         if(spinnerAdapter == null) {
-            spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Utility.getSpinnerData());
+            spinnerAdapter = new ArrayAdapter<String>(MyApp.getAppContext(), android.R.layout.simple_spinner_item, Utility.getSpinnerData());
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         }
 
@@ -158,13 +157,13 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_add:
-                Intent intentAdd = new Intent(getContext(), AddEditActivity.class);
+                Intent intentAdd = new Intent(MyApp.getAppContext(), AddEditActivity.class);
                 intentAdd.setAction(AddEditActivity.ACTION_ADD);
                 startActivityForResult(intentAdd, AddEditActivity.INTENT_ADD);
                 break;
             case R.id.btn_edit:
                 if(entryValid()){
-                    Intent intentEdit = new Intent(getContext(), AddEditActivity.class);
+                    Intent intentEdit = new Intent(MyApp.getAppContext(), AddEditActivity.class);
                     intentEdit.setAction(AddEditActivity.ACTION_EDIT);
                     intentEdit.putExtra(AddEditActivity.INTENT_KEY_ENTRY_ID, vocabData.get(pager.getCurrentItem()).getId());
                     startActivityForResult(intentEdit, AddEditActivity.INTENT_EDIT);
@@ -231,7 +230,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         @NonNull
         @Override
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            ViewGroup view = (ViewGroup)LayoutInflater.from(getContext()).inflate(R.layout.page_view_item, container, false);
+            ViewGroup view = (ViewGroup)LayoutInflater.from(MyApp.getAppContext()).inflate(R.layout.page_view_item, container, false);
 
             container.addView(view);
 
