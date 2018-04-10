@@ -94,8 +94,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
     private void setupSpinner(){
 
         if(spinnerAdapter == null) {
-            spinnerAdapter = new ArrayAdapter<String>(MyApp.getAppContext(), android.R.layout.simple_spinner_item, Utility.getSpinnerData());
-            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerAdapter = new ArrayAdapter<String>(MyApp.getAppContext(), R.layout.spinner_item, Utility.getSpinnerData());
+            spinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
         }
 
         spinner_box.setAdapter(spinnerAdapter);

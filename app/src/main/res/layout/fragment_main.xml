@@ -18,7 +18,7 @@
             android:text="@string/box"
             android:padding="@dimen/text_padding"
             android:textSize="@dimen/text_box"
-            android:layout_marginStart="@dimen/margin_m"/>
+            android:layout_marginLeft="@dimen/margin_m"/>
 
         <Spinner
             android:id="@+id/spinner_box"
