@@ -33,6 +33,9 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
     private ViewPager pager;
 
+    private CustomViewPagerAdapter pagerAdapter;
+    private ArrayAdapter<String> spinnerAdapter;
+
     public FragmentMain() {
     }
 
@@ -52,6 +55,9 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         setupSpinner();
 
         pager = (ViewPager)v.findViewById(R.id.view_pager);
+        if(pagerAdapter != null){
+            pager.setAdapter(pagerAdapter);
+        }
 
         ((ImageButton)v.findViewById(R.id.btn_add)).setOnClickListener(this);
         ((Button)v.findViewById(R.id.btn_repeat)).setOnClickListener(this);
@@ -64,17 +70,18 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
     private void setupSpinner(){
 
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Utility.getSpinnerData());
+        if(spinnerAdapter == null) {
+            spinnerAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, Utility.getSpinnerData());
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        }
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_box.setAdapter(adapter);
+        spinner_box.setAdapter(spinnerAdapter);
 
         spinner_box.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String box = parent.getItemAtPosition(position).toString();
-                if(!box.equals(selectedBox)) {
+                if(!box.equals(selectedBox)){
                     selectedBox = box;
                     initializeData();
                     switchEntry();
@@ -86,6 +93,15 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
             }
         });
+    }
+
+    private void updatePagerAdapter(boolean keepPage){
+        int currentPage = pager.getCurrentItem();
+        pagerAdapter = new CustomViewPagerAdapter();
+        pager.setAdapter(pagerAdapter);
+        if(keepPage && currentPage < pagerAdapter.getCount()){
+            pager.setCurrentItem(currentPage, false);
+        }
     }
 
     @Override
@@ -179,7 +195,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
     private void switchEntry(){
         Collections.shuffle(vocabData);
-        pager.setAdapter(new CustomViewPagerAdapter());
+        updatePagerAdapter(false);
     }
 
     private void showHint(){
