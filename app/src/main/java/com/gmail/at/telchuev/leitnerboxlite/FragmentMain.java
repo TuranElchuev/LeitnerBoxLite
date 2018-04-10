@@ -27,8 +27,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
     private ArrayList<Entry> vocabData;
 
-    private boolean hint = false;
-
     private String selectedBox;
 
     private ViewPager pager;
@@ -55,9 +53,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         setupSpinner();
 
         pager = (ViewPager)v.findViewById(R.id.view_pager);
-        if(pagerAdapter != null){
-            pager.setAdapter(pagerAdapter);
-        }
+        setupPager();
 
         ((ImageButton)v.findViewById(R.id.btn_add)).setOnClickListener(this);
         ((Button)v.findViewById(R.id.btn_repeat)).setOnClickListener(this);
@@ -66,6 +62,34 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         ((ImageButton)v.findViewById(R.id.btn_edit)).setOnClickListener(this);
 
         return v;
+    }
+
+    private void setupPager(){
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position > 0){
+                    vocabData.get(position - 1).setShowHint(false);
+                }
+                if(position < vocabData.size() - 1){
+                    vocabData.get(position + 1).setShowHint(false);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        if(pagerAdapter != null){
+            pager.setAdapter(pagerAdapter);
+        }
     }
 
     private void setupSpinner(){
@@ -122,7 +146,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
             case AddEditActivity.INTENT_EDIT:
                 if(resultCode == Activity.RESULT_OK){
                     vocabData.get(pager.getCurrentItem()).refresh();
-                    // TODO refresh view
+                    updatePagerAdapter(true);
                 }
                 break;
             default:
@@ -147,11 +171,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_hint:
-                if(hint){
-                    hideHint();
-                }else{
-                    showHint();
-                }
+                hint();
                 break;
             case R.id.btn_repeat:
                 if((entryValid())) {
@@ -180,6 +200,14 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         return vocabData != null && !vocabData.isEmpty();
     }
 
+    private void hint(){
+        if(entryValid()){
+            Entry e = vocabData.get(pager.getCurrentItem());
+            e.setShowHint(!e.isShowHint());
+            updatePagerAdapter(true);
+        }
+    }
+
     private void removeCurrentEntry(){
         if(entryValid()){
             vocabData.remove(pager.getCurrentItem());
@@ -198,16 +226,6 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         updatePagerAdapter(false);
     }
 
-    private void showHint(){
-        hint = true;
-        // TODO refresh view
-    }
-
-    private void hideHint(){
-        hint = false;
-        // TODO refresh view
-    }
-
     private class CustomViewPagerAdapter extends PagerAdapter{
 
         @NonNull
@@ -222,16 +240,16 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
             TextView tv_example = (TextView)view.findViewById(R.id.tv_example);
             TextView tv_example_hint = (TextView)view.findViewById(R.id.tv_example_hint);
 
-            if(hint){
-                tv_hint.setVisibility(View.VISIBLE);
-                tv_example_hint.setVisibility(View.VISIBLE);
-            }
-
             Entry e = vocabData.get(position);
             tv_word.setText(e.getWord());
             tv_hint.setText(e.getHint());
             tv_example.setText(e.getExample());
             tv_example_hint.setText(e.getExampleHint());
+
+            if(e.isShowHint()){
+                tv_hint.setVisibility(View.VISIBLE);
+                tv_example_hint.setVisibility(View.VISIBLE);
+            }
 
             return view;
         }

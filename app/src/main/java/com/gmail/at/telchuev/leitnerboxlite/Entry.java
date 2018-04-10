@@ -27,6 +27,8 @@ public class Entry {
     long lastVisited,
         created;
 
+    private boolean showHint = false;
+
     public Entry(){
         this.setId(INVALID_ID);
         this.setBoxNumber(BOX_NMB_MIN);
@@ -74,6 +76,11 @@ public class Entry {
 
     // SETTERS
 
+
+    public void setShowHint(boolean showHint) {
+        this.showHint = showHint;
+    }
+
     private void setId(int id) {
         this.id = id;
     }
@@ -117,6 +124,11 @@ public class Entry {
 
 
     // GETTERS
+
+
+    public boolean isShowHint() {
+        return showHint;
+    }
 
     public int getId() {
         return id;
