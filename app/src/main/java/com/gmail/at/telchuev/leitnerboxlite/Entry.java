@@ -172,14 +172,22 @@ public class Entry {
 
     // STATE
 
-    public void know(){
+    public boolean know(){
+        if(this.getBoxNumber() >= BOX_NMB_MAX){
+            return false;
+        }
         this.setBoxNumber(Math.min(BOX_NMB_MAX, getBoxNumber() + 1));
         this.toDB();
+        return true;
     }
 
-    public void repeat(){
+    public boolean repeat(){
+        if(this.getBoxNumber() <= BOX_NMB_MIN){
+            return false;
+        }
         this.setBoxNumber(BOX_NMB_MIN);
         this.toDB();
+        return true;
     }
 
     // DATABASE MANIPULATIONS

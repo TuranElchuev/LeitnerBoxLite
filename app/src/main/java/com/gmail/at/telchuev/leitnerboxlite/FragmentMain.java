@@ -173,15 +173,15 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
                 hint();
                 break;
             case R.id.btn_repeat:
-                if((entryValid())) {
-                    vocabData.get(pager.getCurrentItem()).repeat();
+                if(entryValid()
+                        && vocabData.get(pager.getCurrentItem()).repeat()) {
                     removeCurrentEntry();
                     switchEntry();
                 }
                 break;
             case R.id.btn_know:
-                if((entryValid())) {
-                    vocabData.get(pager.getCurrentItem()).know();
+                if(entryValid()
+                    && vocabData.get(pager.getCurrentItem()).know()){
                     removeCurrentEntry();
                     switchEntry();
                 }
