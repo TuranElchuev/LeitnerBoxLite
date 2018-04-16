@@ -30,6 +30,9 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
     private ViewPager pager;
 
+    private TextView tv_count;
+    int totalWordCount = 0;
+
     private CustomViewPagerAdapter pagerAdapter;
     private ArrayAdapter<String> spinnerAdapter;
 
@@ -47,6 +50,8 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_main, container, false);
+
+        tv_count = (TextView)v.findViewById(R.id.tv_count);
 
         spinner_box = (Spinner)v.findViewById(R.id.spinner_box);
         setupSpinner();
@@ -88,7 +93,12 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
         if(pagerAdapter != null){
             pager.setAdapter(pagerAdapter);
+            refreshViews();
         }
+    }
+
+    private void refreshViews(){
+        tv_count.setText(""+pagerAdapter.getCount() + " (" + totalWordCount + ")");
     }
 
     private void setupSpinner(){
@@ -125,6 +135,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
         if(keepPage && currentPage < pagerAdapter.getCount()){
             pager.setCurrentItem(currentPage, false);
         }
+        refreshViews();
     }
 
     @Override
@@ -193,6 +204,7 @@ public class FragmentMain extends Fragment implements View.OnClickListener{
 
     private void initializeData(){
         vocabData = Utility.getBoxVocabulary(selectedBox);
+        totalWordCount = Utility.getTotalWordsCount();
     }
 
     private boolean dataExists(){

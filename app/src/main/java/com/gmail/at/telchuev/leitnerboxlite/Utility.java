@@ -42,6 +42,23 @@ public class Utility {
         return getVocabulary(DBHelper.COL_BOX_NMB + " = " + boxNmb);
     }
 
+    public static int getTotalWordsCount(){
+        int result = 0;
+        SQLiteDatabase db = new DBHelper().getWritableDatabase();
+
+        String query = "SELECT COUNT(" + DBHelper.COL_ID + ")"
+                + " AS " + DBHelper.COL_ID
+                + " FROM " + DBHelper.TABLE_NAME_MAIN;
+        Cursor c = db.rawQuery(query, null);
+
+        if(c.moveToFirst()){
+            result = c.getInt(c.getColumnIndex(DBHelper.COL_ID));
+        }
+        c.close();
+        db.close();
+        return result;
+    }
+
     public static ArrayList<Entry> getLowestBoxVocabulary(){
 
         ArrayList<Entry> result = new ArrayList<>();
