@@ -232,4 +232,11 @@ public class Entry {
 
         this.init(vocab.get(0));
     }
+
+    public boolean isEmpty(){
+        return Utility.empty(word)
+                && Utility.empty(hint)
+                && Utility.empty(example)
+                && Utility.empty(exampleHint);
+    }
 }

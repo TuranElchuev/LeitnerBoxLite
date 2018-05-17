@@ -101,6 +101,14 @@ public class Utility {
         return result;
     }
 
+    public static ArrayList<String> getSpinnerData(){
+        ArrayList<String> boxes = new ArrayList<>();
+        for(int i = Entry.BOX_NMB_MIN; i <= Entry.BOX_NMB_MAX; i++){
+            boxes.add(""+i);
+        }
+        return boxes;
+    }
+
 
     // DATA MANIPULATION
 
@@ -195,16 +203,14 @@ public class Utility {
 
     }
 
+    // HELPERS
+
     public static class Word {
         public String word;
         public String example;
     }
 
-    public static ArrayList<String> getSpinnerData(){
-        ArrayList<String> boxes = new ArrayList<>();
-        for(int i = Entry.BOX_NMB_MIN; i <= Entry.BOX_NMB_MAX; i++){
-            boxes.add(""+i);
-        }
-        return boxes;
+    public static boolean empty(String s){
+        return s == null || s.isEmpty();
     }
 }

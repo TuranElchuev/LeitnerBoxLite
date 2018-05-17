@@ -20,6 +20,7 @@
     <string name="invalid_entry">Invalid entry!</string>
     <string name="entry_added">Entry added.</string>
     <string name="entry_saved">Entry saved.</string>
+    <string name="entry_empty">Entry is empty!</string>
     <string name="entry_updated">Entry updated.</string>
     <string name="no_entries">No entries in selected box.</string>
 </resources>

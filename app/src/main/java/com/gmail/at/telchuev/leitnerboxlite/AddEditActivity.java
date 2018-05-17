@@ -59,10 +59,14 @@ public class AddEditActivity extends Activity {
     }
 
     private void saveEntry(){
-        entry_.setWord(et_word.getText().toString());
-        entry_.setHint(et_hint.getText().toString());
-        entry_.setExample(et_example.getText().toString());
-        entry_.setExampleHint(et_example_hint.getText().toString());
+        entry_.setWord(et_word.getText().toString().trim());
+        entry_.setHint(et_hint.getText().toString().trim());
+        entry_.setExample(et_example.getText().toString().trim());
+        entry_.setExampleHint(et_example_hint.getText().toString().trim());
+        if(entry_.isEmpty()){
+            Toast.makeText(this, R.string.entry_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
         entry_.toDB();
         Toast.makeText(this, R.string.entry_saved, Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
