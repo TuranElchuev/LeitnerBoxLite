@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
         if(getFragmentManager().findFragmentByTag(FR_MAIN_TAG) == null) {
             getFragmentManager().beginTransaction().add(R.id.frame_main, new FragmentMain(), FR_MAIN_TAG).commit();
         }
-        //Utility.importFile();
+        Utility.importFile();
     }
 
 }
